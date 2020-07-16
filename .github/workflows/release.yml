@@ -7,6 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
+      - run: cp .github/.releaserc.js .
       - uses: codfish/semantic-release-action@v1
         if: github.ref == 'refs/heads/master'
         env:
