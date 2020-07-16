@@ -1,0 +1,19 @@
+name: Challenge
+on:
+  push:
+    tags:
+      - v*
+    branches:
+      - master
+  pull_request:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: docker/compose:1.24.1
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: install deps
+        run: apk add --no-cache make git
+      - name: build challenges
+        run: make docker.build
