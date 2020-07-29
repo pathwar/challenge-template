@@ -1,5 +1,26 @@
 version: '3.7'
 
+# releases metadata (optional)
+x-pathwar:
+  challenge:
+    name: "Challenge Template"
+    slug: template
+    locale: "en"
+    author: "Pathwar Staff"
+    homepage: https://github.com/pathwar/challenge-template
+  flavor:
+    purchase_price: 5
+    validation_reward: 15
+    body: "Lorem ipsum."
+    passphrases: 1
+    category: web
+    tags:
+      - template
+    redump-policy:
+      - strategy: on-validation
+      - strategy: every
+        delay: 1h
+
 services:
   front:
     build: front
