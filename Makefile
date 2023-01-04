@@ -2,8 +2,7 @@ PREFIX ?= pathwar/
 PATHWAR_OPTS ?=
 
 .PHONY: pathwar.run
-pathwar.run:
-	pathwar $(PATHWAR_OPTS) compose prepare --no-push ./ > pathwar-compose.yml
+pathwar.run: pathwar.prepare
 	pathwar $(PATHWAR_OPTS) compose up --force-recreate pathwar-compose.yml
 
 .PHONY: pathwar.down
@@ -18,14 +17,23 @@ pathwar.ps:
 docker.build:
 	docker-compose build --pull
 
-.PHONY: pathwar-prepare
+.PHONY: pathwar.prepare
 pathwar.prepare:
-	pathwar $(PATHWAR_OPTS) compose prepare --prefix=$(PREFIX) --no-push .
+	pathwar $(PATHWAR_OPTS) compose prepare --no-push . > pathwar-compose.yml
 
-.PHONY: pathwar-push
+.PHONY: pathwar.push
 pathwar.push:
-	pathwar $(PATHWAR_OPTS) compose prepare --prefix=$(PREFIX) .
+	pathwar $(PATHWAR_OPTS) compose prepare --prefix=$(PREFIX) . > pathwar-compose.yml
+
+.PHONY: docker.pathwar.push
+docker.pathwar.push:
+	docker run -it --rm --privileged -v /var/run/docker.sock:/var/run/docker.sock -v "$(PWD):$(PWD)" -w "$(PWD)" pathwar/agent compose prepare --prefix=$(PREFIX) . > pathwar-compose.yml
+
+.PHONY: pathwar.register
+pathwar.register:
+	pathwar $(PATHWAR_OPTS) compose register --print ./pathwar-compose.yml > _register.sh
+	chmod +x _register.sh
 
 .PHONY: make.bump
 make.bump:
-	wget -O rules.mk https://raw.githubusercontent.com/tree/master/challenges/challenge.mk Makefile
+	wget -O Makefile https://raw.githubusercontent.com/pathwar/pathwar/master/challenges/challenge.mk
